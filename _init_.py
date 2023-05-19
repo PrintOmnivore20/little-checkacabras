@@ -1,7 +1,7 @@
 from BaseClasses import Region, Entrance, Item, Tutorial, ItemClassification
-from .Items import LittleCheckacabrasItem, item_table, required_items
-from .Locations import LittleCheckacabrasAdvancement, advancement_table
-from .Options import LittleCheckacabras_options
+from .Items import LCItem, item_table, required_items
+from .Locations import LittleCheckacabraAdvancement, advancement_table
+from .Options import littlecheckacabras_options
 from .Rules import set_rules, set_completion_rules
 from ..AutoWorld import World, WebWorld
 
@@ -14,18 +14,17 @@ class LittleCheckacabrasWeb(WebWorld):
         "A guide to setting up the Archipelago Little Checkacabras software on your computer. This guide covers "
         "single-player, multiworld, and related software.",
         "English",
-        "littlecheckacabras.md",
-        "littlecheckacabras/en",
+        "en_littlecheckacabras.md",
         ["Mewlif"]
     )]
 
 
-class LittleCheckabraWorld(World):
+class LittleCheckacabraWorld(World):
     """
     Little Checkacabras is a virtual pet game where you raise pig-like creatures to find checks on your very own island.
     """
     game: str = "Little Checkacabras"
-    option_definitions = LittleCheckacabras_options
+    option_definitions = littlecheckacabras_options
     topology_present = True
     web = LittleCheckacabrasWeb()
 
@@ -61,18 +60,18 @@ class LittleCheckabraWorld(World):
 
     def create_regions(self):
         menu = Region("Menu", self.player, self.multiworld)
-        board = Region("Board", self.player, self.multiworld)
-        board.locations = [LittleCheckacabrasAdvancement(self.player, loc_name, loc_data.id, board)
+        board = Region("Overworld", self.player, self.multiworld)
+        board.locations = [LittleCheckacabraAdvancement(self.player, loc_name, loc_data.id, board)
                            for loc_name, loc_data in advancement_table.items() if loc_data.region == board.name]
 
-        connection = Entrance(self.player, "New Board", menu)
+        connection = Entrance(self.player, "StartScreen", menu)
         menu.exits.append(connection)
         connection.connect(board)
         self.multiworld.regions += [menu, board]
 
     def fill_slot_data(self):
         slot_data = self._get_LittleCheckacabras_data()
-        for option_name in LittleCheckacabras_options:
+        for option_name in littlecheckacabras_options:
             option = getattr(self.multiworld, option_name)[self.player]
             if slot_data.get(option_name, None) is None and type(option.value) in {str, int}:
                 slot_data[option_name] = int(option.value)
@@ -80,7 +79,7 @@ class LittleCheckabraWorld(World):
 
     def create_item(self, name: str) -> Item:
         item_data = item_table[name]
-        item = LittleCheckacabrasItem(name,
+        item = LCItem(name,
                                 ItemClassification.progression if item_data.progression else ItemClassification.filler,
                                 item_data.code, self.player)
         return item

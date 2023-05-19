@@ -5,9 +5,6 @@ import typing
 class ItemData(typing.NamedTuple):
     code: typing.Optional[int]
     progression: bool
-    trap: bool = False
-    quantity: int = 1
-    event: bool = False
 
 
 class LCItem(Item):
@@ -46,6 +43,8 @@ food_table = {
     "Kids Meal Toy": ItemData(80014,True)
 }
 
+
+
 trap_table = {
     "Worker's Strike": ItemData(80050,False),
     "Famine": ItemData(80051,False),
@@ -57,6 +56,14 @@ item_table = {
     **progression_table,
     **food_table,
     **trap_table,
+}
+
+required_items = {
+**progression_table
+}
+
+item_frequencies = {
+
 }
 
 
